@@ -1,13 +1,9 @@
-#include <serial.h>
-#include <libc.h>
 #include "isr.h"
 #include "idt.h"
 #include "../drivers/screen.h"
 #include "../drivers/keyboard.h"
-#include "../libc/string.h"
 #include "timer.h"
 #include "ports.h"
-#include "../fs/hdd.h"
 #include "../kernel/kernel.h"
 
 isr_t interrupt_handlers[256];
@@ -133,8 +129,9 @@ void isr_handler(registers_t *r) {
     // kprint("\n");
     // kprint(exception_messages[r->int_no]);
     // kprint("\n");
-    crash_screen(r, exception_messages[r->int_no], 1);
+    //crash_screen(r, exception_messages[r->int_no], 1);
     while (1);
+    UNUSED(r);
 }
 
 void register_interrupt_handler(uint8_t n, isr_t handler) {
@@ -159,11 +156,6 @@ void irq_handler(registers_t *r) {
         //free(test, 0x1000);
         //sprint("Done handling\n");
     } 
-    else {
-        if (loaded == 1) {
-            kprint("");
-        }
-    }
 }
 
 void irq_install() {
@@ -173,5 +165,4 @@ void irq_install() {
     //init_timer(50);
     /* IRQ1: keyboard */
     init_keyboard();
-    init_hdd();
 }
